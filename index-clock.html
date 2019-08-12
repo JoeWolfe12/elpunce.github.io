@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clock</title>
+</head>
+<body>
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+      </div>
+    </div>
+
+    <div class="threebox">
+        <div id="hours" class="clock-box"></div>
+        <div id="minutes" class="clock-box"></div>
+        <div id="seconds" class="clock-box"></div>
+    </div>
+    
+    <div>
+        <select id="timezone" size = "3" class="select-box">
+            <option value=aus>Melbourne, Australia</option>
+            <option value=col>Medellin, Colombia</option>
+            <option value=eng>Manchester, England</option>
+        </select>
+    </div>    
+           
+    
+
+
+  <style>
+    html {
+      
+      background-size: cover;
+      font-family: 'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+
+    body {
+        background: #018DED url("pictures/melbourne.jpg");
+        background-size: 100%;
+      margin: 0;
+      font-size: 2rem;
+      display: flex;
+      flex: 1;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    .clock {
+    float: left;
+      width: 30rem;
+      height: 30rem;
+      border: 20px solid white;
+      border-radius: 50%;
+      margin: 50px auto;
+      position: relative;
+      padding: 0rem;
+      box-shadow:
+        0 0 0 4px rgba(0,0,0,0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px); /* account for the height of the clock hands */
+    }
+
+    .hand {
+      width: 50%;
+      height: 6px;
+      background: black;
+      position: absolute;
+      top: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0.1, 3, 0.5, 1);
+    }
+
+    .threebox {
+      width: 42rem;
+      float: left;
+      height: 10rem;
+      border: 10px solid white;
+      margin: 50px auto;
+      position: relative;
+      padding: 0rem;
+      box-shadow:
+        0 0 0 4px rgba(0,0,0,0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .clock-box {
+      width: 12rem;
+      background: #EFEFEF;
+      height: 8rem;
+      border: 10px solid white;
+      float: left;
+      text-align: center;
+      font-size: 7rem;
+    }
+
+    .select-box {
+      width: 36rem;
+      height: 8rem;
+      font-size: 2rem;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+  </style>
+
+  <script>
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
+    var currentTimezone = document.getElementById("timezone");
+    var body = document.getElementsByTagName("body")[0];
+
+    function setDate() {
+        var degreesAdjustment = 0;
+        var hoursAdjustment = 0;
+        const now = new Date();
+
+        if(timezone.value == "aus") {
+            degreesAdjustment = 0;
+            hoursAdjustment = 0;
+            body.style.backgroundImage = `url("pictures/melbourne.jpg")`;
+        }
+        else if(timezone.value == "eng") {
+            degreesAdjustment = 135;
+            hoursAdjustment = -9;
+            body.style.backgroundImage = `url("pictures/england.jpg")`;
+        }
+        else if(timezone.value == "col") {
+            degreesAdjustment = 225;
+            hoursAdjustment = -15;
+            body.style.backgroundImage = `url("pictures/medellin.jpg")`;
+        }
+
+        const seconds = now.getSeconds();
+        const secondsDegrees = ((seconds / 60) * 360) + 90;
+        secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+        var secondsDigital = document.getElementById("seconds");
+        secondsDigital.innerHTML = seconds;
+
+        const minutes = now.getMinutes();
+        const minutesDegrees = ((minutes / 60) * 360) + 90;
+        minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+        var minutesDigital = document.getElementById("minutes");
+        minutesDigital.innerHTML = minutes;
+      
+        var hours = now.getHours();
+        if((hours + hoursAdjustment) < 0) {
+            hours = 24 + hours + hoursAdjustment;
+        }
+        else {
+            hours = hours + hoursAdjustment;
+        }
+        const hoursDegrees = ((hours / 12) * 360) + 90 + degreesAdjustment;
+        hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+        var hoursDigital = document.getElementById("hours");
+        hoursDigital.innerHTML = hours;
+
+        console.log(seconds);
+        console.log(minutes);
+        console.log(hours);
+        console.log(timezone.value);
+        console.log(body.style.backgroundImage);
+
+    }
+    
+    setInterval(setDate, 1000);
+    
+  </script>
+</body>
+</html>
